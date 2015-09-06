@@ -1,0 +1,78 @@
+#grid th{
+    color:white;
+    background-color:navy;
+    width:50px;
+}
+#grid td{
+    border-radius:5px;
+    width:50px;
+    cursor:pointer;
+    text-align:center;
+    font-weight:bold;
+    border: 1px solid white;
+}
+#grid .in-path{
+    background-color:red;
+}
+#grid .is-last{
+    background-color:gold;
+}
+#grid td.highlight-main{
+    border: 1px solid green;
+    background-color:green;
+    color:white;
+
+}
+#grid td.highlight{
+    border: 1px solid green;
+}
+#grid tr{
+    height:50px;
+}
+#alignment {
+    min-width:250px;
+}
+#alignment td{
+    width:30px;
+    font-weight:bold;
+}
+
+label{
+    float:left;
+    margin-right:10px;
+}
+.seq {
+    width:195px;
+    float:left;
+    text-transform: uppercase;
+}
+
+.params{
+    width:70px;
+}
+
+#result{
+    border-left:2px solid black;
+    padding-left:10px;
+}
+
+#tooltip {
+	display:block;
+	position: absolute;
+	z-index: 9000;
+	border-radius:10px;
+	color:white;
+	padding: 5px;
+	opacity: 0.96;
+	margin:0;
+    max-width:600px;
+    background-color:navy;
+    color:white;
+}
+#tooltip h3, #tooltip div, #tooltip p{ margin: 0; text-align:center; }
+
+#tooltip table td{
+    border:1px solid white;
+    color:white;
+    max-width:150px;
+}
