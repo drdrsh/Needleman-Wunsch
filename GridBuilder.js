@@ -231,17 +231,17 @@ var GridBuilder = (function () {
 
         var $tr = $("<tr />");
         $tr.append(
-            $("<td />").html("Score from Diagonal cell = " + targetCell.diagonalScoreText)
+            $("<td />").html("<b><u>Score from Diagonal cell</u></b> <br> " + targetCell.diagonalScoreText)
         ).append(
-            $("<td />").html("Score from Upper cell = " + targetCell.upScoreText)
+            $("<td />").html("<b><u>Score from Upper cell</u></b> <br> " + targetCell.upScoreText)
         );
         $table.append($tr);
 
         $tr = $("<tr />");
         $tr.append(
-            $("<td />").html("Score from Side cell = " + targetCell.sideScoreText)
+            $("<td />").html("<b><u>Score from Side cell</u></b> <br> " + targetCell.sideScoreText)
         ).append(
-            $("<td />").html(targetCell.winningScore)
+            $("<td />").html("Winning (max) score is " + targetCell.winningScore)
         );
         $table.append($tr);
 
@@ -539,10 +539,11 @@ var GridBuilder = (function () {
                     mCellMap[i + "_" + j] = {
                         'sideScoreText': mPathTable[i - 1][j] + " + " + gapScore + " (The Gap score) = " + moveSdScore,
                         'upScoreText': mPathTable[i][j - 1] + " + " + gapScore + " (The Gap score) = " + moveUpScore,
-                        'diagonalScoreText': parseInt(comparisonScore, 10) +
+                        'diagonalScoreText': mPathTable[i - 1][j - 1]  + " + " +  
+                            parseInt(comparisonScore, 10) +
                             " (Due to a " + (isMatch ? "match" : "mismatch") +
-                            " between " + mTopSequence[i - 1] + "&" + mSideSequence[j - 1] + ") " +
-                            "+" + mPathTable[i - 1][j - 1] + " = " +
+                            " between " + mTopSequence[i - 1] + " & " + mSideSequence[j - 1] + ") " +
+                            " = " +
                             moveDgScore,
                         'sideScore': moveSdScore,
                         'upScore': moveUpScore,

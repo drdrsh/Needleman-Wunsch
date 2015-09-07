@@ -82,5 +82,7 @@ label{
 #tooltip table td{
     border:1px solid white;
     color:white;
-    max-width:150px;
+    max-width:170px;
+    padding:5px;
+    vertical-align:top;
 }
