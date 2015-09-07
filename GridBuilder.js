@@ -255,17 +255,18 @@ var GridBuilder = (function () {
         displayTooltip($table, pos.left + targetDom.width() + 10, pos.top - targetDom.height() / 2);
     }
 
-    function dirToArrow(d) {
-        switch (d) {
-            case 'u':
-                return ' &uArr; ';
-            case 's':
-                return ' &lArr; ';
-            case 'd':
-                return ' &#8662;';
-            default:
-                return '';
+    function getCssClassesFromDirection(directions) {
+        
+        var cssClasses = "";
+
+        if(!Array.isArray(directions)){
+            return cssClasses;
         }
+
+        cssClasses = directions.join(' ');
+
+        return cssClasses;
+        
     }
 
     function constructNRow(n) {
@@ -276,45 +277,42 @@ var GridBuilder = (function () {
         var $th = null;
 
         if (charIndex >= 0) {
-            $th = $('<th />');
-            $th.addClass("seq-header");
-            $th.addClass("side-header");
-            $th.attr('id', 'side_seq_' + charIndex);
-            $th.html(mSideSequence[charIndex]);
+            $th = $('<th />')
+                .addClass("seq-header")
+                .addClass("side-header")
+                .attr('id', 'side_seq_' + charIndex)
+                .html(mSideSequence[charIndex]);
             $tr.append($th);
         } else {
             $th = $('<th />');
             $tr.append($th);
         }
 
-        var $td = $('<td />');
-        $td.html(
-            //0 + "_" + n
-            dirToArrow(mCellMap[0 + "_" + n].direction) +
-            mCellMap[0 + "_" + n].winningScore
-        );
-        $td.attr('data-x', 0);
-        $td.attr('data-y', n);
-        $td.attr('id', 0 + "_" + n);
+        var $td = $('<td />')
+            .html(mCellMap[0 + "_" + n].winningScore)
+            .attr('data-x', 0)
+            .attr('data-y', n)
+            .attr('id', 0 + "_" + n);
         $tr.append($td);
 
         for (var idx in mTopSequence) {
             idx = parseInt(idx, 10);
             var dataPointIndex = (idx + 1) + '_' + (charIndex + 1);
-            $td = $('<td />');
-            //console.log(dataPointIndex);
-            $td.html(
-                //dataPointIndex
-                dirToArrow(mCellMap[dataPointIndex].direction) +
-                mCellMap[dataPointIndex].winningScore
-            );
-            $td.attr('data-x', (idx + 1));
-            $td.attr('data-y', (charIndex + 1));
-            $td.attr('data-dg', mCellMap[dataPointIndex].diagonalScoreText);
-            $td.attr('data-up', mCellMap[dataPointIndex].upScoreText);
-            $td.attr('data-sd', mCellMap[dataPointIndex].sideScoreText);
+            
+            var cssClasses = "";
+            if(n > 0){
+                cssClasses = getCssClassesFromDirection(mCellMap[(idx+1) + "_" + (charIndex+ 1)].direction);
+            }
 
-            $td.attr('id', dataPointIndex);
+            $td = $('<td />')
+                .addClass(cssClasses)
+                .html(mCellMap[dataPointIndex].winningScore)
+                .attr('data-x', (idx + 1))
+                .attr('data-y', (charIndex + 1))
+                .attr('data-dg', mCellMap[dataPointIndex].diagonalScoreText)
+                .attr('data-up', mCellMap[dataPointIndex].upScoreText)
+                .attr('data-sd', mCellMap[dataPointIndex].sideScoreText)
+                .attr('id', dataPointIndex);
             $tr.append($td);
         }
 
@@ -377,8 +375,8 @@ var GridBuilder = (function () {
             if (x < 1 || y < 1) {
                 return;
             }
-            console.log(           "#side_seq_" + (y -1));
-            console.log(           "#top_seq_" + (x -1));
+            //console.log(           "#side_seq_" + (y -1));
+            //console.log(           "#top_seq_" + (x -1));
             $("#side_seq_" + (y-1)).addClass('highlight');
             $("#top_seq_" + (x-1)).addClass('highlight');
             
@@ -426,15 +424,22 @@ var GridBuilder = (function () {
             var currentX = width - 1;
             var currentY = height - 1;
             while (currentX > -1 && currentY > -1) {
+                
                 var currentCell = mCellMap[currentX + '_' + currentY];
                 var currentDom = $('#' + currentX + '_' + currentY);
 
                 currentDom.click();
-                switch (currentCell.direction) {
+                
+                var direction = null;
+                if(currentCell.direction){
+                    direction = currentCell.direction[currentCell.direction.length-1];
+                }
+                
+                switch (direction) {
                     default:
-                        case 'd':
+                    case 'd':
                         currentX--;
-                    currentY--;
+                        currentY--;
                     break;
                     case 's':
                             currentX--;
@@ -443,9 +448,8 @@ var GridBuilder = (function () {
                             currentY--;
                         break;
                 }
-
+                
             }
-
 
         },
 
@@ -529,13 +533,30 @@ var GridBuilder = (function () {
                     It assigns the diagonal the lowest priority, then the up score and then the side scores
                     
                     */
+                    
+                    /*
                     var direction = 'd';
                     if (mPathTable[i][j] === moveUpScore) {
                         direction = 'u';
                     } else if (mPathTable[i][j] === moveSdScore) {
                         direction = 's';
                     }
+                    */
 
+                    var direction = [];
+
+                    if(mPathTable[i][j] === moveDgScore){
+                        direction.push('d');
+                    }
+                    
+                    if (mPathTable[i][j] === moveUpScore) {
+                        direction.push('u');
+                    }
+                    
+                    if (mPathTable[i][j] === moveSdScore) {
+                        direction.push('s');
+                    }
+                    
                     mCellMap[i + "_" + j] = {
                         'sideScoreText': mPathTable[i - 1][j] + " + " + gapScore + " (The Gap score) = " + moveSdScore,
                         'upScoreText': mPathTable[i][j - 1] + " + " + gapScore + " (The Gap score) = " + moveUpScore,
