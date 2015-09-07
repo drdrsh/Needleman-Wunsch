@@ -106,18 +106,18 @@ td{
     border:1px solid black;
 }
 
-td.d.s {
+#grid td.d.s {
     background-image:url('images/ds.png');
 }
 
-td.d.u {
+#grid td.d.u {
     background-image:url('images/du.png');
 }
 
-td.s.u {
+#grid td.s.u {
     background-image:url('images/su.png');
 }
 
-td.d.s.u {
+#grid td.d.s.u {
     background-image:url('images/dsu.png');
 }
