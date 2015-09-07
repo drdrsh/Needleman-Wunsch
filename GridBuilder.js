@@ -110,6 +110,8 @@ var GridBuilder = (function () {
         var alignedSideSeq = '';
 
 
+        $('th').removeClass('included');
+        
         for (var i = mCurrentPath.length - 1; i >= 0; i--) {
 
             var currentCell = mCurrentPath[i];
@@ -117,9 +119,22 @@ var GridBuilder = (function () {
 
             var topChar = mTopSequence[currentCell.x];
             var sideChar = mSideSequence[currentCell.y];
-
+            
+            
             if (!nextCell) {
                 continue;
+            }
+
+            if(topChar){
+                if(currentCell.x != nextCell.x){
+                    $('#top_seq_' + (currentCell.x)).addClass('included');
+                }
+            }
+
+            if(sideChar){
+                if(currentCell.y != nextCell.y){
+                    $('#side_seq_' + (currentCell.y)).addClass('included');
+                }
             }
 
 
@@ -256,12 +271,15 @@ var GridBuilder = (function () {
     function constructNRow(n) {
 
         var $table = $('#grid');
-        var charIndex = parseInt(n) - 1;
+        var charIndex = parseInt(n, 10) - 1;
         var $tr = $('<tr />');
         var $th = null;
 
         if (charIndex >= 0) {
             $th = $('<th />');
+            $th.addClass("seq-header");
+            $th.addClass("side-header");
+            $th.attr('id', 'side_seq_' + charIndex);
             $th.html(mSideSequence[charIndex]);
             $tr.append($th);
         } else {
@@ -281,7 +299,7 @@ var GridBuilder = (function () {
         $tr.append($td);
 
         for (var idx in mTopSequence) {
-            idx = parseInt(idx);
+            idx = parseInt(idx, 10);
             var dataPointIndex = (idx + 1) + '_' + (charIndex + 1);
             $td = $('<td />');
             //console.log(dataPointIndex);
@@ -324,6 +342,9 @@ var GridBuilder = (function () {
 
         for (var idx in mTopSequence) {
             $th = $('<th />');
+            $th.attr('id', 'top_seq_' + idx);
+            $th.addClass("seq-header");
+            $th.addClass("top-header");
             $th.html(mTopSequence[idx]);
             $tr.append($th);
         }
@@ -344,19 +365,49 @@ var GridBuilder = (function () {
         });
 
         $('#grid td').hover(function() {
+            
             if (mIsCustomPathMode) {
                 return;
             }
+            
             var self = $(this);
             var x = self.attr('data-x');
             var y = self.attr('data-y');
+            
             if (x < 1 || y < 1) {
                 return;
             }
+            console.log(           "#side_seq_" + (y -1));
+            console.log(           "#top_seq_" + (x -1));
+            $("#side_seq_" + (y-1)).addClass('highlight');
+            $("#top_seq_" + (x-1)).addClass('highlight');
+            
             showTooltip(x, y);
+        
         }, function() {
+        
+            $(".seq-header").removeClass('highlight');
             $('#grid td').removeClass('highlight');
             $('#grid td').removeClass('highlight-main');
+            hideTooltip();
+            
+        });
+
+        $('#grid th').hover(function() {
+            
+            var self = $(this);
+            if(!self.hasClass("seq-header")){
+                return;
+            }
+            
+            var pos = self.offset();
+            var topMargin = self.hasClass("side-header")?self.height()/4:self.height() + 4;
+            var leftMargin = self.hasClass("side-header")?self.width() + 4:0;
+            var text = self.hasClass("included")?"Included In Alignment":"Not Included In Alignment";
+            
+            displayTooltip(text, pos.left + leftMargin, pos.top + topMargin );
+            
+        }, function() {
             hideTooltip();
         });
 
@@ -467,7 +518,7 @@ var GridBuilder = (function () {
                     */
                     var moveUpScore = mPathTable[i][j - 1] + gapScore;
                     var moveSdScore = mPathTable[i - 1][j] + gapScore;
-                    var moveDgScore = parseInt(comparisonScore) + parseInt(mPathTable[i - 1][j - 1]);
+                    var moveDgScore = parseInt(comparisonScore, 10) + parseInt(mPathTable[i - 1][j - 1]);
                     mPathTable[i][j] = Math.max(moveUpScore, moveSdScore, moveDgScore);
 
                     /*
@@ -488,7 +539,7 @@ var GridBuilder = (function () {
                     mCellMap[i + "_" + j] = {
                         'sideScoreText': mPathTable[i - 1][j] + " + " + gapScore + " (The Gap score) = " + moveSdScore,
                         'upScoreText': mPathTable[i][j - 1] + " + " + gapScore + " (The Gap score) = " + moveUpScore,
-                        'diagonalScoreText': parseInt(comparisonScore) +
+                        'diagonalScoreText': parseInt(comparisonScore, 10) +
                             " (Due to a " + (isMatch ? "match" : "mismatch") +
                             " between " + mTopSequence[i - 1] + "&" + mSideSequence[j - 1] + ") " +
                             "+" + mPathTable[i - 1][j - 1] + " = " +

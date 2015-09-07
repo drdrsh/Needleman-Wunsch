@@ -1,7 +1,15 @@
+#grid th.included{
+    background-color:orange;
+}
 #grid th{
     color:white;
-    background-color:navy;
+    background-color:gray;
     width:50px;
+    border:2px solid transparent;
+}
+#grid th.highlight{
+    border: 2px solid green;
+    background-color:green;
 }
 #grid td{
     border-radius:5px;
