@@ -424,7 +424,7 @@ var GridBuilder = (function () {
             var currentX = width - 1;
             var currentY = height - 1;
             while (currentX > -1 && currentY > -1) {
-                
+
                 var currentCell = mCellMap[currentX + '_' + currentY];
                 var currentDom = $('#' + currentX + '_' + currentY);
 
@@ -434,20 +434,26 @@ var GridBuilder = (function () {
                 if(currentCell.direction){
                     direction = currentCell.direction[currentCell.direction.length-1];
                 }
-                
+
+                if(direction === null) {
+                    if(currentX == 0) {
+                        direction = 'u';
+                    }
+                    if(currentY == 0) {
+                        direction = 's';
+                    }
+                }
+
                 switch (direction) {
+                    case 's':  currentX--;  break;
+                    case 'u':  currentY--;  break;
                     default:
                     case 'd':
                         currentX--;
                         currentY--;
-                    break;
-                    case 's':
-                            currentX--;
-                        break;
-                    case 'u':
-                            currentY--;
                         break;
                 }
+
                 
             }
 
