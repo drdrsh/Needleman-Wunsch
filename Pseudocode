@@ -1,0 +1,56 @@
+First import the numpy package. This makes seeing the matrix we obtain easier.
+Provide the two strings to be aligned. These can be provided as
+seqA='AGTA'
+seqB='ATA'
+The first step in the global alignment dynamic programming approach is to create a matrix 'a' with M + 1 columns and N + 1 rows where M and N correspond to the size of the sequences to be aligned.
+Initialize another matrix of the same size as a, which will contain the direction of the arrows of the alignment. This is going to be used at the traceback stage to give us the alignment. Call this matrix ptr.
+Initialize the variables match, mismatch, and gap which give the score for each of them respectively. Presently, you can take match = 1, mismatch = -1, gap = -1
+Fill the first row and column with the column or row number times the mismatch score. If you print the matrix after completing this step, with the strings provided earlier, it will look like this.
+array([[ 0., -1., -2., -3., -4.],
+       [-1.,  0.,  0.,  0.,  0.],
+       [-2.,  0.,  0.,  0.,  0.],
+       [-3.,  0.,  0.,  0.,  0.]])
+Matrix filling loop (pseudocode):
+for i = 1 to rows:
+    for j =1 to cols:
+        if ith character in seqA == jth character in seqB:
+            score=match
+        else
+            score = mismatch
+        # Now we have 3 choices
+        choice1=a[i-1,j-1]+score     # If characters are aligned
+        choice2=a[i-1,j] + gap       # Gap in seqB
+        choice3=a[i,j-1] + gap       # Gap in seqA
+        Let a[i,j] be max(choice1,choice2,choice3)
+        if a[i,j] is choice1:
+            let ptr[i,j] be 0        # Chars i and j aligned
+        else if a[i,j] is choice2:
+            let ptr[i,j] be 1        # Gap in seqB
+        else 
+            let ptr[i,j] be -1       # Gap in seqA
+
+This completes the matrix filling step. If you print the matrix given the sample input at this stage, you should get
+[[ 0. -1. -2. -3. -4.]
+ [-1.  1.  0. -1. -2.]
+ [-2.  0.  0.  1.  0.]
+ [-3. -1. -1.  0.  2.]]
+Traceback to obtain the alignments:
+i=length of seq A
+j=length of seq B
+while(i>0 or j>0):
+    if ptr[i,j]==0:
+        add ith character of seqA to alnseqA
+        add jth character of seqB to alnseqB
+        decrement i by 1
+        decrement j by 1
+    elif ptr[i,j]==1:
+        add ith character of seqA to alnseqA
+        add '-' to alnseqB
+        decrement i by 1
+    else:
+        add '-' to alnseqA
+        add jth character of seqB to alnseqB
+        decrement j by 1
+
+Print seqA and seqB to see the alignment. The strings will be reversed since we go from the end of the alignment but that can be easily corrected if desired.
+P.S.: Strings can be accessed similar to arrays. e.g., seqA[0] give the first character of the string, seqA[1] gives the second and so on.
